@@ -3,6 +3,7 @@
 ## System Requirements
 
 Build a dynamic QR code system where:
+
 - Users submit a long URL and get back a short URL token + QR code image
 - The QR code encodes a short URL that redirects (302) to the original URL via your server
 - Users can modify the target URL after QR code creation
@@ -16,14 +17,27 @@ Build a dynamic QR code system where:
 Answer these before you start coding:
 
 1. **Static vs Dynamic QR Code:** Why does this system use dynamic QR codes (encode short URL) instead of static (encode original URL directly)? When would you choose static instead?
+   A1: Flexible for targe URL update. Collect data from our server.
+   A2: Target URL is fixed. Don't need to collect data.
 
 2. **Token Generation:** How will you generate short URL tokens? What happens when two different URLs produce the same token? How does collision probability change as the number of tokens grows?
+   A1: Design a fixed length token format. Randomly generate 1 each time.
+   A2: Check database. If tokesn exists, gnerate another one.
+   A3: Collision probability increases when number of tokens grows
 
 3. **Redirect Strategy:** Why 302 (temporary) instead of 301 (permanent)? What are the trade-offs for analytics, URL modification, and latency?
+   A1: 302 allows target URL modification
+   A2: Analytics => 302 allows long term analysis as it allows target URL update.
+   URL modification => 302 allows it.
+   latency => 302 has longer latency
 
 4. **URL Normalization:** What normalization rules do you need? Why is `http://Example.com/` and `https://example.com` potentially the same URL?
+   A1: Use redirect for equivalent URLs
+   A2: Domain name are the same
 
 5. **Error Semantics:** What should happen when someone scans a deleted link vs a non-existent link? Should the HTTP status codes be different?
+   A1: Show different error messages
+   A2: Yes
 
 ## Verification
 
