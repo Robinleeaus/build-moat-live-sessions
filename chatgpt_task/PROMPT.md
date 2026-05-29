@@ -3,6 +3,7 @@
 ## System Requirements
 
 Build a job scheduler with an MCP (Model Context Protocol) interface:
+
 - Users schedule tasks for future execution via MCP tool calls
 - A background watcher scans for due jobs and pushes them to a queue
 - Workers pull jobs from the queue and execute them
@@ -22,14 +23,18 @@ User → MCP Tool Call → Job Scheduler API → DB
 Answer these before you start coding:
 
 1. **Watcher vs Cron:** Why separate the watcher from the worker? What problems does a single cron job that both scans and executes have?
+   Scaning may block executing if not isolated
 
 2. **Queue Layer:** Why put a queue between the watcher and worker instead of having the watcher call the worker directly? What are the benefits?
+   Reduce the worker load if too many concurrent jobs
 
 3. **Time Bucket Partitioning:** Instead of `SELECT * WHERE scheduled_at <= now()`, why partition jobs by time bucket (e.g., hour)? What happens to query performance at 1M+ jobs without partitioning?
 
 4. **Tool Naming:** Why `task.create` instead of `createTask`? How does naming convention affect LLM tool selection accuracy?
+   task is a category wihch can help find the right tool faster
 
 5. **Registry vs If-Else:** Why use a dictionary registry to route tool calls instead of if-else chains? What happens when you need to add the 20th tool?
+   More efficient if there are many tools
 
 ## Verification
 
@@ -85,6 +90,7 @@ Restart Claude Desktop fully. The 🔨 icon in the chat input should show 4 tool
 **Claude Code**: edit `~/.claude.json` (top-level `mcpServers` for user scope) with the same block, or run `claude mcp add` from inside `scaffold/`.
 
 Then chat:
+
 > "Schedule a task to review PR #123 tomorrow at 9am."
 > -> Claude calls `task.create` -> returns job_id
 > "What's the status of that task?"
